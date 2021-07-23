@@ -82,8 +82,10 @@ async def send_message(ctx: vq.NewMessage, user: vq.User, * , text: str,):
 @app.command("кик")
 async def chat(ctx: vq.NewMessage, user: vq.User):
     try:
-        await ctx.api.messages.removeChatUser(chat_id=ctx.msg.chat_id, user_id=user.id)
+        method = await ctx.api.messages.removeChatUser(chat_id=ctx.msg.chat_id, user_id=user.id)
         await ctx.edit( "✅Исключение")
+        if method == 1:
+            await ctx.edit( f"✅Пользователь {user:@[fullname]} исключен из беседы.")
     except vq.APIError[vq.CODE_925_MESSAGES_CHAT_NOT_ADMIN]:
         await ctx.edit( "⚠Нет доступа.")
     except vq.APIError[vq.CODE_935_MESSAGES_CHAT_USER_NOT_IN_CHAT]:
@@ -103,6 +105,8 @@ async def chat(ctx: vq.NewMessage , user: vq.User):
             user_id=user.id
         )
         await ctx.edit(f'✅Добавляю пользователя {user:@[fullname]}')
+        if method == 1:
+            await ctx.edit(f'✅Пользователь {user:@[fullname]} добавлен.')
     except vq.APIError[vq.CODE_925_MESSAGES_CHAT_NOT_ADMIN]:
         await ctx.edit("⚠You are not admin of this chat")
     except vq.APIError[vq.CODE_932_MESSAGES_GROUP_PEER_ACCESS]:
