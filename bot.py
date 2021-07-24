@@ -61,7 +61,21 @@ async def resolve_user(user: vq.User):
     formatted_date = registration_date.strftime("%d.%m.%Y")
     return f"Дата регистрации пользователя {user:@[fullname]}: {formatted_date}"
 
+@app.command("+лайк")
+async def add_like_the_user_profile(ctx: vq.NewMessage, user: vq.User[typing.Literal["photo_id"]]):
+    photo_id = user.fields["photo_id"].split("_")[1]
+    photo_id1 = await ctx.api.method(
+        "likes.add", type="photo", owner_id=user.id, item_id=photo_id
+    )
+    await ctx.edit( f"✅Лайк на аватарку пользователя {user:@[fullname]} оформлен! Стало лайков : {photo_id1['likes']}.")
 
+@app.command("-лайк")
+async def add_like_the_user_profile(ctx: vq.NewMessage, user: vq.User[typing.Literal["photo_id"]]):
+    photo_id = user.fields["photo_id"].split("_")[1]
+    photo_id1 = await ctx.api.method(
+        "likes.delete", type="photo", owner_id=user.id, item_id=photo_id
+    )
+    await ctx.edit( f"✅Лайк на аватарку пользователя {user:@[fullname]} убран! Стало лайков : {photo_id1['likes']}.")
 
 @app.command("ид")
 async def revolve_user(user: vq.User):
